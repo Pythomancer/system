@@ -1,7 +1,8 @@
-pub mod part;
 pub mod geometry;
-pub mod matrix;
 pub mod impls;
+pub mod matrix;
+pub mod mesh;
+pub mod part;
 use macroquad::prelude::*;
 
 #[macroquad::main("World")]

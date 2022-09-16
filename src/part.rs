@@ -1,5 +1,10 @@
 use crate::geometry::*;
+use crate::mesh::*;
+pub enum Component {
+    Root(Mesh),
+    Assembly(Vec<Part>),
+}
 pub struct Part {
-    pub origin: Vec4,
-    pub subparts: Vec<Part>,
+    pub origin: Point3,
+    pub component: Component,
 }
