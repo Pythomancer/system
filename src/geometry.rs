@@ -41,18 +41,6 @@ impl Vec3 {
             z: self.x * other.y - self.y * other.x,
         }
     }
-
-    // pub fn plane(&self) -> Plane {
-    //     if self.y == 0.0 && self.z == 0.0 {
-    //         Plane::X(self.x)
-    //     } else if self.x == 0.0 && self.z == 0.0 {
-    //         Plane::Y(self.y)
-    //     } else if self.y == 0.0 && self.x == 0.0 {
-    //         Plane::Z(self.z)
-    //     } else {
-    //         Plane::None
-    //     }
-    // }
 }
 
 pub struct Vec4 {
@@ -97,26 +85,14 @@ impl Vec4 {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct Point3 {
     pub x: f32,
     pub y: f32,
     pub z: f32,
 }
 
-pub enum Plane {
-    X(f32),
-    Y(f32),
-    Z(f32),
-    None,
-}
-
 impl Point3 {
-    pub fn distance_mag(&self, other: &Point3) -> f32 {
-        ((self.x - other.x).powf(2.0) + (self.y - other.y).powf(2.0) + (self.z - other.z).powf(2.0))
-            .sqrt()
-    }
-
     pub fn matching_coords(&self, other: &Point3) -> usize {
         let mut i: usize = 0;
         if self.x == other.x {
@@ -145,18 +121,6 @@ impl Point3 {
             y: self.y,
             z: self.z,
             w: 1.0,
-        }
-    }
-
-    pub fn coplane(a: &Point3, b: &Point3, c: &Point3) -> Plane {
-        if a.x == b.x && b.x == c.x {
-            Plane::X(a.x)
-        } else if a.y == b.y && b.y == c.y {
-            Plane::Y(a.y)
-        } else if a.z == b.z && b.z == c.z {
-            Plane::Z(a.z)
-        } else {
-            Plane::None
         }
     }
 

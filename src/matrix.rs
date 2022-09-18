@@ -60,28 +60,28 @@ impl Mat4 {
         let transpose = other.transpose();
         Mat4::from_arr([
             [
-                self.a.dot(&other.a),
-                self.a.dot(&other.b),
-                self.a.dot(&other.c),
-                self.a.dot(&other.d),
+                self.a.dot(&transpose.a),
+                self.a.dot(&transpose.b),
+                self.a.dot(&transpose.c),
+                self.a.dot(&transpose.d),
             ],
             [
-                self.b.dot(&other.a),
-                self.b.dot(&other.b),
-                self.b.dot(&other.c),
-                self.b.dot(&other.d),
+                self.b.dot(&transpose.a),
+                self.b.dot(&transpose.b),
+                self.b.dot(&transpose.c),
+                self.b.dot(&transpose.d),
             ],
             [
-                self.c.dot(&other.a),
-                self.c.dot(&other.b),
-                self.c.dot(&other.c),
-                self.c.dot(&other.d),
+                self.c.dot(&transpose.a),
+                self.c.dot(&transpose.b),
+                self.c.dot(&transpose.c),
+                self.c.dot(&transpose.d),
             ],
             [
-                self.d.dot(&other.a),
-                self.d.dot(&other.b),
-                self.d.dot(&other.c),
-                self.d.dot(&other.d),
+                self.d.dot(&transpose.a),
+                self.d.dot(&transpose.b),
+                self.d.dot(&transpose.c),
+                self.d.dot(&transpose.d),
             ],
         ])
     }

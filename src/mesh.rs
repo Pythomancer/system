@@ -1,7 +1,7 @@
 use macroquad::color;
 
 use crate::{geometry::*, render::Renderer};
-
+use float_ord::FloatOrd;
 #[derive(Clone, Copy, Debug)]
 pub struct Triangle {
     pub a: usize,
@@ -94,6 +94,58 @@ impl Mesh {
                 println!("{:?}", color);
             }
             _ => {}
+        }
+    }
+}
+
+pub struct BoundBox {
+    pub min: Point3,
+    pub max: Point3,
+}
+
+impl BoundBox {
+    pub fn bb_from_mesh(mesh: &Mesh) -> BoundBox {
+        let mut min_pt = mesh.points[0];
+        let mut max_pt = mesh.points[0];
+        min_pt.x = mesh
+            .points
+            .iter()
+            .min_by_key(|pt| FloatOrd(pt.x))
+            .unwrap()
+            .x;
+        min_pt.y = mesh
+            .points
+            .iter()
+            .min_by_key(|pt| FloatOrd(pt.y))
+            .unwrap()
+            .y;
+        max_pt.z = mesh
+            .points
+            .iter()
+            .min_by_key(|pt| FloatOrd(pt.z))
+            .unwrap()
+            .z;
+        min_pt.x = mesh
+            .points
+            .iter()
+            .max_by_key(|pt| FloatOrd(pt.x))
+            .unwrap()
+            .x;
+        max_pt.y = mesh
+            .points
+            .iter()
+            .max_by_key(|pt| FloatOrd(pt.y))
+            .unwrap()
+            .y;
+        max_pt.z = mesh
+            .points
+            .iter()
+            .max_by_key(|pt| FloatOrd(pt.z))
+            .unwrap()
+            .z;
+        BoundBox {
+            min: min_pt,
+            max: max_pt,
         }
     }
 }
