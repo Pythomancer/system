@@ -41,6 +41,15 @@ impl Vec3 {
             z: self.x * other.y - self.y * other.x,
         }
     }
+
+    pub fn to_spherical(&self) -> SpherePoint3 {
+        let rad = (self.x.powf(2.0) + self.y.powf(2.0) + self.z.powf(2.0)).sqrt();
+        SpherePoint3 {
+            theta: self.y.atan2(self.x),
+            phi: (self.z / rad).acos(),
+            r: rad,
+        }
+    }
 }
 
 pub struct Vec4 {
@@ -115,12 +124,11 @@ impl Point3 {
         }
     }
 
-    pub fn to_vec(&self) -> Vec4 {
-        Vec4 {
+    pub fn to_vec(&self) -> Vec3 {
+        Vec3 {
             x: self.x,
             y: self.y,
             z: self.z,
-            w: 1.0,
         }
     }
 
@@ -130,5 +138,17 @@ impl Point3 {
             y: 0.0,
             z: 0.0,
         }
+    }
+}
+
+pub struct SpherePoint3 {
+    pub theta: f32,
+    pub phi: f32,
+    pub r: f32,
+}
+
+impl SpherePoint3 {
+    pub fn is_in(&self, other: &SpherePoint3, hfov: f32, vfov: f32) -> bool {
+        (self.theta - other.theta).abs() < hfov && (self.phi - other.phi).abs() < vfov
     }
 }

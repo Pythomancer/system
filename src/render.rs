@@ -19,8 +19,8 @@ pub struct World {
 pub struct Camera {
     pub location: Point3,
     pub look: Vec3,
+    pub hfov: f32,
     pub vfov: f32,
-    pub aspect_ratio: f32,
 }
 
 impl World {

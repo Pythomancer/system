@@ -1,6 +1,7 @@
-use crate::geometry::Point3;
+use crate::geometry::{Point3, Vec3};
 use crate::mesh::*;
 use std::fmt;
+use std::ops::Sub;
 impl fmt::Display for Triangle {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "idx: {}, {}, {}", self.a, self.b, self.c)
@@ -16,5 +17,17 @@ impl fmt::Display for Point3 {
 impl fmt::Display for Mesh {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "triangles: {:#?}", self.triangles)
+    }
+}
+
+impl Sub for Vec3 {
+    type Output = Self;
+
+    fn sub(self, other: Self) -> Self::Output {
+        Self {
+            x: self.x - other.x,
+            y: self.y - other.y,
+            z: self.z - other.z,
+        }
     }
 }

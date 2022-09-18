@@ -1,6 +1,9 @@
 use macroquad::color;
 
-use crate::{geometry::*, render::Renderer};
+use crate::{
+    geometry::*,
+    render::{Camera, Renderer},
+};
 use float_ord::FloatOrd;
 #[derive(Clone, Copy, Debug)]
 pub struct Triangle {
@@ -147,5 +150,21 @@ impl BoundBox {
             min: min_pt,
             max: max_pt,
         }
+    }
+
+    pub fn is_visible(&self, camera: &Camera) -> bool {
+        for x in [self.min.x, self.max.x] {
+            for y in [self.min.y, self.max.y] {
+                for z in [self.min.z, self.max.z] {
+                    if (Vec3 { x, y, z } - camera.location.to_vec())
+                        .to_spherical()
+                        .is_in(&camera.look.to_spherical(), camera.hfov, camera.vfov)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
     }
 }
