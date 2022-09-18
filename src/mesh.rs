@@ -1,5 +1,6 @@
 use crate::geometry::*;
-#[derive(Clone, Copy)]
+
+#[derive(Clone, Copy, Debug)]
 pub struct Triangle {
     pub a: usize,
     pub b: usize,
@@ -46,7 +47,7 @@ impl Mesh {
             triangles: Vec::new(),
         }
     }
-    pub fn cube(sl: f32) {
+    pub fn cube(sl: f32) -> Mesh {
         let mut pts = Vec::<Point3>::new();
         let mut tris = Vec::<Triangle>::new();
         let v = vec![0.5 * sl, -0.5 * sl];
@@ -75,6 +76,10 @@ impl Mesh {
                     );
                 }
             }
+        }
+        Mesh {
+            points: pts,
+            triangles: tris,
         }
     }
 }

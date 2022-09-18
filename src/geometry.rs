@@ -97,6 +97,7 @@ impl Vec4 {
     }
 }
 
+#[derive(Debug)]
 pub struct Point3 {
     pub x: f32,
     pub y: f32,
