@@ -29,9 +29,10 @@ impl Triangle {
         let norm = self.normal(pts);
         let a = &pts[self.a];
 
-        match norm.dot(&a.vec_to(&Point3::origin())) > 0.0 {
-            True => self.flip_normal(),
-            False => *self,
+        if norm.dot(&a.vec_to(&Point3::origin())) > 0.0 {
+            self.flip_normal()
+        } else {
+            *self
         }
     }
 }

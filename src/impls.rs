@@ -22,10 +22,6 @@ impl fmt::Display for Point3 {
 
 impl fmt::Display for Mesh {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "points: {:?} \ntriangles: {:?}",
-            self.points, self.triangles
-        )
+        write!(f, "triangles: {:#?}", self.triangles)
     }
 }
