@@ -15,7 +15,7 @@ impl Triangle {
         }
     }
 
-    pub fn normal(&self, pts: Vec<Point3>) -> Vec3 {
+    pub fn normal(&self, pts: &Vec<Point3>) -> Vec3 {
         let a = &pts[self.a];
         let b = &pts[self.b];
         let c = &pts[self.c];
@@ -24,7 +24,7 @@ impl Triangle {
         ab.cross(&ac)
     }
 
-    pub fn norm_out(&self, pts: Vec<Point3>) -> Triangle {
+    pub fn norm_out(&self, pts: &Vec<Point3>) -> Triangle {
         let norm = self.normal(pts);
         let a = &pts[self.a];
 
@@ -53,16 +53,27 @@ impl Mesh {
         for i in v.clone() {
             for j in v.clone() {
                 for k in v.clone() {
+                    // add one point for each combination of 1 and -1 (times 0.5*sl) in x y and z
                     pts.push(Point3 { x: i, y: j, z: k });
                 }
             }
         }
         // triangles originate from points 0 and 7
-        for idxo in 1..7 {
+        for idxz in [0, 7] {
             // index one, where index zero is zero
-            for idxt in (idxo + 1)..7 {
+            for idxo in 1..7 {
                 // index two
-                print!("a");
+                for idxt in (idxo + 1)..7 {
+                    tris.push(
+                        Triangle {
+                            a: idxz,
+                            b: idxo,
+                            c: idxt,
+                        }
+                        .norm_out(&pts), // add a triangle for that face and make its normal outward manually,
+                                         // as opposed to normal propagation
+                    );
+                }
             }
         }
     }
