@@ -3,6 +3,7 @@ pub mod impls;
 pub mod matrix;
 pub mod mesh;
 pub mod part;
+pub mod render;
 use crate::mesh::Mesh;
 use macroquad::prelude::*;
 
@@ -20,5 +21,4 @@ async fn main() {
     //     next_frame().await
     // }
     let cube = Mesh::cube(1.0);
-    println!("{}", cube);
 }

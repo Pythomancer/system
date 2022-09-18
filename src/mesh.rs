@@ -1,10 +1,13 @@
-use crate::geometry::*;
+use macroquad::color;
+
+use crate::{geometry::*, render::Renderer};
 
 #[derive(Clone, Copy, Debug)]
 pub struct Triangle {
     pub a: usize,
     pub b: usize,
     pub c: usize,
+    pub color: usize,
 }
 
 impl Triangle {
@@ -13,6 +16,7 @@ impl Triangle {
             a: self.a,
             b: self.c,
             c: self.b,
+            color: self.color,
         }
     }
 
@@ -39,15 +43,10 @@ impl Triangle {
 pub struct Mesh {
     pub points: Vec<Point3>,
     pub triangles: Vec<Triangle>,
+    pub colors: Vec<color::Color>,
 }
 
 impl Mesh {
-    pub fn new() -> Mesh {
-        Mesh {
-            points: Vec::new(),
-            triangles: Vec::new(),
-        }
-    }
     pub fn cube(sl: f32) -> Mesh {
         let mut pts = Vec::<Point3>::new();
         let mut tris = Vec::<Triangle>::new();
@@ -71,6 +70,7 @@ impl Mesh {
                             a: idxz,
                             b: idxo,
                             c: idxt,
+                            color: 0,
                         }
                         .norm_out(&pts), // add a triangle for that face and make its normal outward manually,
                                          // as opposed to normal propagation
@@ -81,6 +81,19 @@ impl Mesh {
         Mesh {
             points: pts,
             triangles: tris,
+            colors: vec![color::BLACK],
+        }
+    }
+
+    pub fn draw(&self, renderer: &Renderer) {
+        match renderer {
+            Renderer::Wireframe(color) => {
+                println!("{:?}", color);
+            }
+            Renderer::Simple(color) => {
+                println!("{:?}", color);
+            }
+            _ => {}
         }
     }
 }
