@@ -168,3 +168,33 @@ impl BoundBox {
         false
     }
 }
+
+pub struct BoundSphere {
+    center: Point3,
+    radius: f32,
+}
+
+impl BoundSphere {
+    pub fn from_mesh(mesh: Mesh) -> BoundSphere {
+        match mesh.points.len() {
+            0 => BoundSphere {
+                center: Point3::origin(),
+                radius: 0.0,
+            },
+            _ => {
+                let c = Point3::sum_points(&mesh.points).scale(1.0 / mesh.points.len() as f32);
+                let r = mesh
+                    .points
+                    .into_iter()
+                    .max_by_key(|x| FloatOrd(x.vec_to(&c).mag()))
+                    .expect("mesh is empty")
+                    .vec_to(&c)
+                    .mag();
+                BoundSphere {
+                    center: c,
+                    radius: r,
+                }
+            }
+        }
+    }
+}

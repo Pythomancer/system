@@ -50,6 +50,10 @@ impl Vec3 {
             r: rad,
         }
     }
+
+    pub fn mag(&self) -> f32 {
+        (self.x.powf(2.0) + self.y.powf(2.0) + self.z.powf(2.0)).sqrt()
+    }
 }
 
 pub struct Vec4 {
@@ -138,6 +142,26 @@ impl Point3 {
             y: 0.0,
             z: 0.0,
         }
+    }
+
+    pub fn scale(&self, scalar: f32) -> Point3 {
+        Point3 {
+            x: self.x * scalar,
+            y: self.y * scalar,
+            z: self.z * scalar,
+        }
+    }
+
+    pub fn sum_points(pts: &Vec<Point3>) -> Point3 {
+        let mut a = Point3 {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        };
+        for p in pts {
+            a += *p;
+        }
+        a
     }
 }
 
