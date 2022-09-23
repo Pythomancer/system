@@ -1,6 +1,7 @@
 use crate::{
     geometry::{Point3, Vec3},
     part,
+    sphere::BoundSphere,
 };
 use macroquad::color;
 
@@ -21,6 +22,10 @@ pub struct Camera {
     pub look: Vec3,
     pub hfov: f32,
     pub vfov: f32,
+}
+
+impl Camera {
+    pub fn can_see(&self, bounds: &BoundSphere) {}
 }
 
 impl World {

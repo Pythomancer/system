@@ -4,6 +4,8 @@ pub mod matrix;
 pub mod mesh;
 pub mod part;
 pub mod render;
+pub mod sphere;
+pub mod utils;
 use crate::mesh::Mesh;
 use macroquad::prelude::*;
 

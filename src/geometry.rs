@@ -1,3 +1,5 @@
+use crate::sphere::*;
+#[derive(Debug, Copy, Clone)]
 pub struct Vec3 {
     pub x: f32,
     pub y: f32,
@@ -53,6 +55,22 @@ impl Vec3 {
 
     pub fn mag(&self) -> f32 {
         (self.x.powf(2.0) + self.y.powf(2.0) + self.z.powf(2.0)).sqrt()
+    }
+
+    pub fn scale(&self, scalar: f32) -> Vec3 {
+        Vec3 {
+            x: self.x * scalar,
+            y: self.y * scalar,
+            z: self.z * scalar,
+        }
+    }
+
+    pub fn norm(&self) -> Self {
+        *self / self.mag()
+    }
+
+    pub fn angle_between(&self, other: &Self) -> f32 {
+        (self.dot(other) / self.mag() / other.mag()).acos()
     }
 }
 
@@ -165,14 +183,14 @@ impl Point3 {
     }
 }
 
-pub struct SpherePoint3 {
-    pub theta: f32,
-    pub phi: f32,
-    pub r: f32,
+pub struct Line3 {
+    point: Point3,
+    direction: Vec3,
 }
 
-impl SpherePoint3 {
-    pub fn is_in(&self, other: &SpherePoint3, hfov: f32, vfov: f32) -> bool {
-        (self.theta - other.theta).abs() < hfov && (self.phi - other.phi).abs() < vfov
+impl Line3 {
+    pub fn dist_pt(&self, pt: &Point3) -> f32 {
+        let delta = self.point.vec_to(pt);
+        (delta - self.direction * delta.dot(&self.direction)).mag()
     }
 }
