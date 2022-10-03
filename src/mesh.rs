@@ -2,7 +2,7 @@ use macroquad::color;
 
 use crate::{
     geometry::*,
-    render::{Camera, Renderer},
+    render::{Camera, Renderer}, sphere::BoundSphere,
 };
 use float_ord::FloatOrd;
 #[derive(Clone, Copy, Debug)]
@@ -47,6 +47,7 @@ pub struct Mesh {
     pub points: Vec<Point3>,
     pub triangles: Vec<Triangle>,
     pub colors: Vec<color::Color>,
+    pub bounds: BoundSphere,
 }
 
 impl Mesh {
@@ -81,10 +82,12 @@ impl Mesh {
                 }
             }
         }
+        let bounds = BoundSphere::from_pts(&pts);
         Mesh {
             points: pts,
             triangles: tris,
             colors: vec![color::BLACK],
+            bounds
         }
     }
 

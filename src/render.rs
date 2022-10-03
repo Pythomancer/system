@@ -1,7 +1,7 @@
 use crate::{
     geometry::{Point3, Vec3},
     part,
-    sphere::BoundSphere,
+    sphere::BoundSphere, utils::AngleRange,
 };
 use macroquad::color;
 
@@ -25,7 +25,24 @@ pub struct Camera {
 }
 
 impl Camera {
-    pub fn can_see(&self, bounds: &BoundSphere) {}
+    pub fn to_ranges(&self) -> (AngleRange, AngleRange) { // (h, v)
+        let slook = self.look.to_spherical();
+        let h = AngleRange {min: slook.theta - self.hfov/2.0, max: slook.theta + self.hfov/2.0};
+        let v = AngleRange {min: slook.phi - self.vfov/2.0, max: slook.phi + self.vfov/2.0};
+        (h, v)
+
+    }
+    pub fn can_see(&self, bounds: &BoundSphere) -> bool{
+        let view = self.to_ranges();
+        let bound_view = bounds.angle_ranges_from(&self.location);
+        if view.0.overlap(bound_view.0).is_none() || 
+            view.1.overlap(bound_view.1).is_none() { // if either angle does not match
+                false
+            } 
+        else { 
+            true
+        }
+    }
 }
 
 impl World {

@@ -1,8 +1,8 @@
 use std::f32::consts::TAU;
 
 pub struct AngleRange {
-    min: f32,
-    max: f32,
+    pub min: f32,
+    pub max: f32,
 }
 impl AngleRange {
     pub fn from(a: f32, b: f32) -> AngleRange {

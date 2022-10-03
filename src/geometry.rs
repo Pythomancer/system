@@ -44,9 +44,9 @@ impl Vec3 {
         }
     }
 
-    pub fn to_spherical(&self) -> SpherePoint3 {
+    pub fn to_spherical(&self) -> SpherePoint {
         let rad = (self.x.powf(2.0) + self.y.powf(2.0) + self.z.powf(2.0)).sqrt();
-        SpherePoint3 {
+        SpherePoint {
             theta: self.y.atan2(self.x),
             phi: (self.z / rad).acos(),
             r: rad,
