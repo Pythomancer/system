@@ -1,5 +1,4 @@
 use crate::geometry::*;
-use crate::mesh::*;
 use crate::utils::AngleRange;
 use float_ord::FloatOrd;
 pub struct BoundSphere {
@@ -17,7 +16,7 @@ impl BoundSphere {
             _ => {
                 let c = Point3::sum_points(pts).scale(1.0 / pts.len() as f32);
                 let r = pts
-                    .into_iter()
+                    .iter()
                     .max_by_key(|x| FloatOrd(x.vec_to(&c).mag()))
                     .expect("mesh is empty")
                     .vec_to(&c)
@@ -35,16 +34,23 @@ impl BoundSphere {
     pub fn view_cone_angle_radius(&self, pt: &Point3) -> f32 {
         self.radius.atan2(self.center.vec_to(pt).mag())
     }
-    pub fn angle_ranges_from(&self, pt: &Point3) -> (AngleRange, AngleRange) { // (h, v)
+    pub fn angle_ranges_from(&self, pt: &Point3) -> (AngleRange, AngleRange) {
+        // (h, v)
         let phi = pt.vec_to(&self.center).to_spherical().phi; // NOTE must be vec from pt (camera) to center, otherwise theta will be off
-        let theta = pt.vec_to(&self.center).to_spherical().theta; 
+        let theta = pt.vec_to(&self.center).to_spherical().theta;
         let vcar = self.view_cone_angle_radius(pt);
-        let h = AngleRange{min: theta - vcar, max: theta + vcar};
-        let v = AngleRange{min: phi - vcar, max: phi + vcar};
+        let h = AngleRange {
+            min: theta - vcar,
+            max: theta + vcar,
+        };
+        let v = AngleRange {
+            min: phi - vcar,
+            max: phi + vcar,
+        };
         (h, v)
-
-
-
+    }
+    pub fn offset(&mut self, center: Point3) {
+        self.center += center
     }
 }
 

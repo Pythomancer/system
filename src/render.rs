@@ -46,5 +46,11 @@ impl Camera {
 }
 
 impl World {
-    pub fn render() {}
+    pub fn render(&self) {
+        for m in self.meshes {
+            if self.camera.can_see(m.bounds){
+                
+            }
+        }
+    }
 }
