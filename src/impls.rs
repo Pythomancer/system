@@ -1,7 +1,7 @@
 use crate::geometry::{Point3, Vec3};
 use crate::mesh::*;
 use std::fmt;
-use std::ops::{AddAssign, Div, Mul, Sub};
+use std::ops::{Add, AddAssign, Div, Mul, Sub};
 impl fmt::Display for Triangle {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "idx: {}, {}, {}", self.a, self.b, self.c)
@@ -37,6 +37,13 @@ impl AddAssign for Point3 {
         self.x += rhs.x;
         self.y += rhs.y;
         self.z += rhs.z;
+    }
+}
+
+impl Add for Point3 {
+    type Output = Self;
+    fn add(self, rhs: Self) -> Self{
+        Self {x: self.x + rhs.x, y: self.y + rhs.y, z: self.z + rhs.z}
     }
 }
 

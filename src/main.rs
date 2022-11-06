@@ -7,11 +7,20 @@ pub mod render;
 pub mod sphere;
 pub mod utils;
 use crate::mesh::Mesh;
+use crate::part::*;
+use crate::render::*;
 use macroquad::prelude::*;
 
 #[macroquad::main("World")]
 async fn main() {
     println!("Hello, world!");
+    let mut world = World::new_empty();
+    let cube = Mesh::cube(1.0);
+    world.add_part(Part::from_mesh(cube));
+    loop {
+        world.render();
+        next_frame().await
+    }
     // loop {
     //     clear_background(RED);
 
@@ -22,5 +31,4 @@ async fn main() {
 
     //     next_frame().await
     // }
-    let cube = Mesh::cube(1.0);
 }

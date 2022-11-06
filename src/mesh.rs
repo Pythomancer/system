@@ -2,7 +2,8 @@ use macroquad::color;
 
 use crate::{
     geometry::*,
-    render::{Camera, Renderer}, sphere::BoundSphere,
+    render::{Camera, Renderer},
+    sphere::BoundSphere,
 };
 use float_ord::FloatOrd;
 #[derive(Clone, Copy, Debug)]
@@ -43,11 +44,13 @@ impl Triangle {
         }
     }
 }
+
 pub struct Mesh {
     pub points: Vec<Point3>,
     pub triangles: Vec<Triangle>,
     pub colors: Vec<color::Color>,
     pub bounds: BoundSphere,
+    pub origin: Point3,
 }
 
 impl Mesh {
@@ -87,7 +90,12 @@ impl Mesh {
             points: pts,
             triangles: tris,
             colors: vec![color::BLACK],
-            bounds
+            bounds,
+            origin: Point3 {
+                x: 0.0,
+                y: 0.0,
+                z: 0.0,
+            },
         }
     }
 
@@ -100,6 +108,15 @@ impl Mesh {
                 println!("{:?}", color);
             }
             _ => {}
+        }
+    }
+    pub fn offset(&self, origin_offset: &Point3) -> Self {
+        Mesh {
+            points: self.points.clone(),
+            triangles: self.triangles.clone(),
+            colors: self.colors.clone(),
+            bounds: self.bounds,
+            origin: self.origin + *origin_offset,
         }
     }
 }

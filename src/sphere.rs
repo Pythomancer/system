@@ -1,6 +1,8 @@
 use crate::geometry::*;
 use crate::utils::AngleRange;
 use float_ord::FloatOrd;
+
+#[derive(Copy, Clone)]
 pub struct BoundSphere {
     center: Point3,
     radius: f32,

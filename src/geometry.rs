@@ -7,6 +7,9 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
+    pub fn new(x: f32, y: f32, z: f32) -> Vec3 {
+        Vec3 { x, y, z }
+    }
     pub fn to_vec4(&self) -> Vec4 {
         Vec4 {
             x: self.x,
@@ -72,6 +75,14 @@ impl Vec3 {
     pub fn angle_between(&self, other: &Self) -> f32 {
         (self.dot(other) / self.mag() / other.mag()).acos()
     }
+
+    pub fn project_xy(&self) -> Vec3 {
+        Vec3 {
+            x: self.x,
+            y: self.y,
+            z: 0.0,
+        }
+    }
 }
 
 pub struct Vec4 {
@@ -124,6 +135,9 @@ pub struct Point3 {
 }
 
 impl Point3 {
+    pub fn new(x: f32, y: f32, z: f32) -> Point3 {
+        Point3 { x, y, z }
+    }
     pub fn matching_coords(&self, other: &Point3) -> usize {
         let mut i: usize = 0;
         if self.x == other.x {
