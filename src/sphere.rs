@@ -30,9 +30,6 @@ impl BoundSphere {
             }
         }
     }
-    pub fn line_intersects(&self, line: Line3) -> bool {
-        self.radius > line.dist_pt(&self.center)
-    }
     pub fn view_cone_angle_radius(&self, pt: &Point3) -> f32 {
         self.radius.atan2(self.center.vec_to(pt).mag())
     }

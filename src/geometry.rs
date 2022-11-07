@@ -1,4 +1,4 @@
-use crate::sphere::*;
+use crate::{matrix::Mat4, sphere::*};
 #[derive(Debug, Copy, Clone)]
 pub struct Vec3 {
     pub x: f32,
@@ -194,17 +194,5 @@ impl Point3 {
             a += *p;
         }
         a
-    }
-}
-
-pub struct Line3 {
-    point: Point3,
-    direction: Vec3,
-}
-
-impl Line3 {
-    pub fn dist_pt(&self, pt: &Point3) -> f32 {
-        let delta = self.point.vec_to(pt);
-        (delta - self.direction * delta.dot(&self.direction)).mag()
     }
 }

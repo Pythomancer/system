@@ -1,11 +1,6 @@
 use macroquad::color;
 
-use crate::{
-    geometry::*,
-    render::{Camera, Renderer},
-    sphere::BoundSphere,
-};
-use float_ord::FloatOrd;
+use crate::{geometry::*, matrix::Mat4, render::Renderer, sphere::BoundSphere};
 #[derive(Clone, Copy, Debug)]
 pub struct Triangle {
     pub a: usize,
@@ -24,7 +19,7 @@ impl Triangle {
         }
     }
 
-    pub fn normal(&self, pts: &Vec<Point3>) -> Vec3 {
+    pub fn normal(&self, pts: &[Point3]) -> Vec3 {
         let a = &pts[self.a];
         let b = &pts[self.b];
         let c = &pts[self.c];
@@ -33,7 +28,7 @@ impl Triangle {
         ab.cross(&ac)
     }
 
-    pub fn norm_out(&self, pts: &Vec<Point3>) -> Triangle {
+    pub fn norm_out(&self, pts: &[Point3]) -> Triangle {
         let norm = self.normal(pts);
         let a = &pts[self.a];
 
@@ -117,6 +112,11 @@ impl Mesh {
             colors: self.colors.clone(),
             bounds: self.bounds,
             origin: self.origin + *origin_offset,
+        }
+    }
+    pub fn transform(&mut self, mat: Mat4) {
+        for pt in self.points {
+            mat.transform_pt(pt);
         }
     }
 }
