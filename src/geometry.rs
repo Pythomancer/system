@@ -195,4 +195,11 @@ impl Point3 {
         }
         a
     }
+
+    pub fn transform(&mut self, mat: &Mat4) {
+        let p = mat.transform(self.to_vec().to_vec4()).to_pt3();
+        self.x = p.x;
+        self.y = p.y;
+        self.z = p.z;
+    }
 }

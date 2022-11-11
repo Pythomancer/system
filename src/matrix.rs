@@ -134,8 +134,4 @@ impl Mat4 {
     pub fn rotate(thx: f32, thy: f32, thz: f32) -> Mat4 {
         Mat4::rotate_x(thx).mul(&Mat4::rotate_y(thy).mul(&Mat4::rotate_z(thz)))
     }
-
-    pub fn transform_pt(&self, pt: Point3) -> Point3 {
-        self.transform(pt.to_vec().to_vec4()).to_pt3()
-    }
 }

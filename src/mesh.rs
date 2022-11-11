@@ -114,9 +114,9 @@ impl Mesh {
             origin: self.origin + *origin_offset,
         }
     }
-    pub fn transform(&mut self, mat: Mat4) {
-        for pt in self.points {
-            mat.transform_pt(pt);
+    pub fn transform(&mut self, mat: &Mat4) {
+        for pt in self.points.iter_mut() {
+            pt.transform(mat);
         }
     }
 }

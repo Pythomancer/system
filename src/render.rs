@@ -104,6 +104,7 @@ impl Camera {
             renderer: Renderer::Wireframe(color),
         }
     }
+    pub fn tick(&self, time: u32) {}
 }
 
 impl World {
@@ -113,6 +114,12 @@ impl World {
             if p.bound_spheres().iter().any(|x| self.camera.can_see(x)) {
                 self.camera.draw_part(p);
             }
+        }
+    }
+    pub fn tick(&self, time: u32) {
+        for part in &self.parts {
+            part.tick(time);
+            self.camera.tick(time);
         }
     }
     pub fn new_empty() -> World {
