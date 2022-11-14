@@ -11,19 +11,19 @@ use crate::part::*;
 use crate::render::*;
 use macroquad::prelude::*;
 
-impl Part {
-    fn rotate_cube(&self, time: u32) {
-        self.transform(&matrix::Mat4::rotate_y(1.0));
-    }
+fn rotate_cube(p: &mut Part, time: u32) {
+    p.transform(&matrix::Mat4::rotate_y(1.0));
+    println!("{}", time);
 }
+
 #[macroquad::main("World")]
 async fn main() {
     println!("Hello, world!");
     let mut world = World::new_empty();
-    let cube = Mesh::cube(1.0);
-    world.add_part(Part::from_mesh(cube));
-    let cube = world.parts.get(0).expect("empty world");
-    cube.tick_fn = (cube.rotate_cube(_));
+    let m_cube = Mesh::cube(1.0);
+    world.add_part(Part::from_mesh(m_cube));
+    let cube = world.parts.get_mut(0).expect("empty world");
+    cube.tick_fn = rotate_cube;
     let mut time: u32 = 0;
     loop {
         world.render();

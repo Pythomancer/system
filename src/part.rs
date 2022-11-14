@@ -9,31 +9,20 @@ pub enum Component {
 pub struct Part {
     pub origin: Point3,
     pub component: Component,
-    pub tick_fn: fn(&Self, time: u32),
+    pub tick_fn: fn(&mut Part, u32),
 }
 
 impl Part {
-    pub fn default_tick_fn(&self, time: u32) {}
-    pub fn bound_spheres(&self) -> Vec<BoundSphere> {
-        let parts = self.part_tree_flatten();
-        parts.iter().map(|x| x.bounds).collect()
-    }
-    pub fn transform(&self, mat: &Mat4) {
-        for p in self.part_tree_flatten() {
-            p.transform(mat);
-        }
-    }
-    pub fn part_tree_flatten(&self) -> Vec<Mesh> {
-        let mut out = Vec::<Mesh>::new();
-        match &self.component {
-            Component::Root(mesh) => return vec![mesh.offset(&self.origin)],
+    pub fn default_tick_fn(p: &mut Part, time: u32) {}
+    pub fn transform(&self, mat: &Mat4, offset: Point3) {
+        match self.component {
+            Component::Root(m) => m.offset(&offset).transform(mat),
             Component::Assembly(parts) => {
-                for part in parts {
-                    out.extend(part.part_tree_flatten())
+                for part in &parts {
+                    part.transform(mat, offset + part.origin)
                 }
             }
         }
-        out
     }
 
     pub fn from_mesh(mesh: Mesh) -> Part {
@@ -43,7 +32,7 @@ impl Part {
             component: Component::Root(mesh),
         }
     }
-    pub fn tick(&self, time: u32) {
+    pub fn tick(&mut self, time: u32) {
         (self.tick_fn)(self, time);
     }
 }

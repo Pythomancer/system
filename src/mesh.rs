@@ -105,14 +105,16 @@ impl Mesh {
             _ => {}
         }
     }
-    pub fn offset(&self, origin_offset: &Point3) -> Self {
-        Mesh {
-            points: self.points.clone(),
-            triangles: self.triangles.clone(),
-            colors: self.colors.clone(),
-            bounds: self.bounds,
-            origin: self.origin + *origin_offset,
-        }
+    pub fn offset(&self, origin_offset: &Point3) -> &Self {
+        self.origin = self.origin + *origin_offset;
+        self
+        // Mesh {
+        //     points: self.points.clone(),
+        //     triangles: self.triangles.clone(),
+        //     colors: self.colors.clone(),
+        //     bounds: self.bounds,
+        //     origin: self.origin + *origin_offset,
+        // }
     }
     pub fn transform(&mut self, mat: &Mat4) {
         for pt in self.points.iter_mut() {

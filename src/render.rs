@@ -91,9 +91,7 @@ impl Camera {
         }
     }
     pub fn draw_part(&self, part: &Part) {
-        for mesh in part.part_tree_flatten() {
-            self.draw_mesh(&mesh);
-        }
+        todo!()
     }
     pub fn new(color: color::Color) -> Camera {
         Camera {
@@ -111,13 +109,12 @@ impl World {
     pub fn render(&self) {
         clear_background(self.background);
         for p in &self.parts {
-            if p.bound_spheres().iter().any(|x| self.camera.can_see(x)) {
-                self.camera.draw_part(p);
-            }
+            self.camera.draw_part(p);
         }
     }
-    pub fn tick(&self, time: u32) {
-        for part in &self.parts {
+
+    pub fn tick(&mut self, time: u32) {
+        for part in &mut self.parts {
             part.tick(time);
             self.camera.tick(time);
         }
