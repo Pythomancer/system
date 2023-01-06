@@ -1,4 +1,6 @@
-use macroquad::color;
+use std::iter::Enumerate;
+
+use macroquad::{color, prelude::Color, rand::gen_range};
 
 use crate::{geometry::*, matrix::Mat4, render::Renderer, sphere::BoundSphere};
 #[derive(Clone, Copy, Debug)]
@@ -17,6 +19,10 @@ impl Triangle {
             c: self.b,
             color: self.color,
         }
+    }
+
+    pub fn midpoint(&self, pts: &[Point3]) -> Point3 {
+        Point3::sum_points(&[pts[self.a], pts[self.b], pts[self.c]]).scale(1.0 / 3.0)
     }
 
     pub fn normal(&self, pts: &[Point3]) -> Vec3 {
@@ -61,22 +67,27 @@ impl Mesh {
                 }
             }
         }
+
         // triangles originate from points 0 and 7
         for idxz in [0, 7] {
             // index one, where index zero is zero
-            for idxo in 1..7 {
+            for (i, idxo) in [1, 2, 4].iter().enumerate() {
                 // index two
-                for idxt in (idxo + 1)..7 {
-                    tris.push(
-                        Triangle {
-                            a: idxz,
-                            b: idxo,
-                            c: idxt,
-                            color: 0,
-                        }
-                        .norm_out(&pts), // add a triangle for that face and make its normal outward manually,
-                                         // as opposed to normal propagation
-                    );
+                for (j, idxt) in [6, 5, 3].iter().enumerate() {
+                    if i != j {
+                        tris.push(
+                            Triangle {
+                                a: idxz,
+                                b: *idxo,
+                                c: *idxt,
+                                color: 4 * idxz + 2 * idxo + idxt,
+                            }
+                            .norm_out(&pts), // add a triangle for that face and make its normal outward manually,
+                                             // as opposed to normal propagation
+                        );
+                        println!("{:?}", tris[tris.len() - 1]);
+                        // println!("({}, {}, {})", idxz, idxo, idxt);
+                    }
                 }
             }
         }
@@ -105,20 +116,38 @@ impl Mesh {
             _ => {}
         }
     }
-    pub fn offset(&self, origin_offset: &Point3) -> &Self {
-        self.origin = self.origin + *origin_offset;
-        self
-        // Mesh {
-        //     points: self.points.clone(),
-        //     triangles: self.triangles.clone(),
-        //     colors: self.colors.clone(),
-        //     bounds: self.bounds,
-        //     origin: self.origin + *origin_offset,
-        // }
+    pub fn offset(&mut self, origin_offset: &Point3) {
+        for pt in self.points.iter_mut() {
+            pt.offset(origin_offset);
+        }
+    }
+    pub fn offset_origin(&mut self, reverse: bool) {
+        for p in &mut self.points {
+            if reverse {
+                p.offset(&self.origin.opposite());
+            } else {
+                p.offset(&self.origin);
+            }
+        }
     }
     pub fn transform(&mut self, mat: &Mat4) {
         for pt in self.points.iter_mut() {
             pt.transform(mat);
+        }
+    }
+    pub fn mesh_color_randomise(&mut self) {
+        self.colors = Vec::<color::Color>::new();
+        for (i, tri) in self.triangles.iter_mut().enumerate() {
+            self.colors.push(Mesh::random_color());
+            tri.color = i;
+        }
+    }
+    pub fn random_color() -> color::Color {
+        Color {
+            r: gen_range(0.0, 1.0),
+            g: gen_range(0.0, 1.0),
+            b: gen_range(0.0, 1.0),
+            a: 1.0,
         }
     }
 }

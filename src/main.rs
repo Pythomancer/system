@@ -6,29 +6,33 @@ pub mod part;
 pub mod render;
 pub mod sphere;
 pub mod utils;
+use std::time;
+use std::time::Instant;
+
+use crate::matrix::Mat4;
 use crate::mesh::Mesh;
 use crate::part::*;
 use crate::render::*;
 use macroquad::prelude::*;
 
-fn rotate_cube(p: &mut Part, time: u32) {
-    p.transform(&matrix::Mat4::rotate_y(1.0));
-    println!("{}", time);
-}
-
 #[macroquad::main("World")]
 async fn main() {
     println!("Hello, world!");
     let mut world = World::new_empty();
-    let m_cube = Mesh::cube(1.0);
-    world.add_part(Part::from_mesh(m_cube));
-    let cube = world.parts.get_mut(0).expect("empty world");
-    cube.tick_fn = rotate_cube;
-    let mut time: u32 = 0;
+    world.camera.renderer = Renderer::Simple(RED);
+    let mut m_cube = Mesh::cube(1.0);
+    m_cube.mesh_color_randomise();
+    let cube = Assembly::from_mesh(m_cube);
+    world.add_part(cube);
     loop {
+        let now = Instant::now();
+        let p = macroquad::input::mouse_position_local();
+        world.transform_mesh_index(
+            0,
+            Mat4::rotate_y(p.y / 10.0).mul(&Mat4::rotate_z(p.x / 10.0)),
+        );
+        println!("elapsed: {:#?}", now.elapsed());
         world.render();
-        world.tick(time);
-        time += 1;
 
         next_frame().await
     }

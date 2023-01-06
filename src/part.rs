@@ -1,38 +1,26 @@
 use crate::geometry::*;
 use crate::matrix::Mat4;
 use crate::mesh::*;
-use crate::sphere::BoundSphere;
-pub enum Component {
-    Root(Mesh),
-    Assembly(Vec<Part>),
-}
-pub struct Part {
-    pub origin: Point3,
-    pub component: Component,
-    pub tick_fn: fn(&mut Part, u32),
-}
 
-impl Part {
-    pub fn default_tick_fn(p: &mut Part, time: u32) {}
-    pub fn transform(&self, mat: &Mat4, offset: Point3) {
-        match self.component {
-            Component::Root(m) => m.offset(&offset).transform(mat),
-            Component::Assembly(parts) => {
-                for part in &parts {
-                    part.transform(mat, offset + part.origin)
-                }
-            }
+pub struct Assembly {
+    pub parts: Vec<Mesh>,
+}
+impl Assembly {
+    pub fn transform(&mut self, mat: &Mat4) {
+        for mesh in &mut self.parts {
+            mesh.offset_origin(false); // make the point the actual point in space
+            mesh.transform(mat); // transform it
+            mesh.offset_origin(true); // put the point back to its own internal coordinate system
         }
     }
-
-    pub fn from_mesh(mesh: Mesh) -> Part {
-        Part {
-            tick_fn: Self::default_tick_fn,
-            origin: Point3::origin(),
-            component: Component::Root(mesh),
+    pub fn from_mesh(m: Mesh) -> Assembly {
+        Assembly {
+            parts: Vec::from_iter([m]),
         }
     }
-    pub fn tick(&mut self, time: u32) {
-        (self.tick_fn)(self, time);
+    pub fn add_mesh(&mut self, m: Mesh) {
+        self.parts.push(m);
     }
 }
+
+impl Mesh {}

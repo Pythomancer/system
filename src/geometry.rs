@@ -42,7 +42,7 @@ impl Vec3 {
     pub fn cross(&self, other: &Vec3) -> Vec3 {
         Vec3 {
             x: self.y * other.z - self.z * other.y,
-            y: self.z * other.x - self.x - other.z,
+            y: -1.0 * self.x * other.z + self.z * other.x,
             z: self.x * other.y - self.y * other.x,
         }
     }
@@ -184,7 +184,7 @@ impl Point3 {
         }
     }
 
-    pub fn sum_points(pts: &Vec<Point3>) -> Point3 {
+    pub fn sum_points_vec(pts: &Vec<Point3>) -> Point3 {
         let mut a = Point3 {
             x: 0.0,
             y: 0.0,
@@ -201,5 +201,19 @@ impl Point3 {
         self.x = p.x;
         self.y = p.y;
         self.z = p.z;
+    }
+
+    pub fn offset(&mut self, other: &Point3) {
+        self.x += other.x;
+        self.y += other.y;
+        self.z += other.z;
+    }
+
+    pub fn opposite(&self) -> Point3 {
+        Point3 {
+            x: -1.0 * self.x,
+            y: -1.0 * self.y,
+            z: -1.0 * self.z,
+        }
     }
 }

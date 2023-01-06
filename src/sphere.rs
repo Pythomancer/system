@@ -16,7 +16,7 @@ impl BoundSphere {
                 radius: 0.0,
             },
             _ => {
-                let c = Point3::sum_points(pts).scale(1.0 / pts.len() as f32);
+                let c = Point3::sum_points_vec(pts).scale(1.0 / pts.len() as f32);
                 let r = pts
                     .iter()
                     .max_by_key(|x| FloatOrd(x.vec_to(&c).mag()))

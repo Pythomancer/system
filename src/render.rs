@@ -1,15 +1,17 @@
 use crate::{
     geometry::{Point3, Vec3},
+    matrix::Mat4,
     mesh::{Mesh, Triangle},
-    part::{self, Part},
+    part::Assembly,
     sphere::BoundSphere,
     utils::AngleRange,
 };
 use macroquad::{
     color,
+    math::Vec2,
     prelude::BLACK,
-    prelude::RED,
-    shapes::draw_line,
+    prelude::{Color, RED},
+    shapes::{draw_line, draw_triangle},
     window::{clear_background, screen_height, screen_width},
 };
 
@@ -20,7 +22,7 @@ pub enum Renderer {
     None,
 }
 pub struct World {
-    pub parts: Vec<part::Part>,
+    pub parts: Vec<Assembly>,
     pub camera: Camera,
     pub background: color::Color,
 }
@@ -68,7 +70,12 @@ impl Camera {
             (a_proj.dot(&up) + 0.5) * screen_height(),
         )
     }
-    pub fn draw_tri(&self, tri: &Triangle, mesh: &Mesh) {
+    pub fn draw_vec(&self, a: &Point3, b: &Point3) {
+        let ap = self.pt_proj(a);
+        let bp = self.pt_proj(b);
+        draw_line(ap.0, ap.1, bp.0, bp.1, 1.0, RED);
+    }
+    pub fn draw_tri(&self, tri: &Triangle, mesh: &Mesh, tcolor: Color) {
         match self.renderer {
             Renderer::Wireframe(color) => {
                 let (a, b, c) = (
@@ -81,28 +88,50 @@ impl Camera {
                 draw_line(b.0, b.1, c.0, c.1, 1.0, color);
                 draw_line(a.0, a.1, c.0, c.1, 1.0, color);
             }
+            Renderer::Simple(_color) => {
+                let n = tri.normal(&mesh.points);
+                if n.dot(&self.location.vec_to(&tri.midpoint(&mesh.points))) < 0.0 {
+                    let (a, b, c) = (
+                        self.pt_proj(&mesh.points[tri.a]),
+                        self.pt_proj(&mesh.points[tri.b]),
+                        self.pt_proj(&mesh.points[tri.c]),
+                    );
+                    draw_triangle(
+                        Vec2 { x: a.0, y: a.1 },
+                        Vec2 { x: b.0, y: b.1 },
+                        Vec2 { x: c.0, y: c.1 },
+                        tcolor,
+                    );
+                    // DRAW NORMALS AT EDGES
+                    // self.draw_vec(
+                    //     &mesh.points[tri.a],
+                    //     &(mesh.points[tri.a] + &tri.normal(&mesh.points).norm()),
+                    // );
+                }
+            }
             Renderer::None => {}
             _ => {}
         }
     }
     pub fn draw_mesh(&self, mesh: &Mesh) {
         for tri in &mesh.triangles {
-            self.draw_tri(tri, mesh);
+            self.draw_tri(tri, mesh, mesh.colors[tri.color]);
         }
     }
-    pub fn draw_part(&self, part: &Part) {
-        todo!()
+    pub fn draw_part(&self, assembly: &Assembly) {
+        for mesh in &assembly.parts {
+            self.draw_mesh(mesh);
+        }
     }
     pub fn new(color: color::Color) -> Camera {
         Camera {
-            location: Point3::new(-2.0, 0.0, 0.0),
+            location: Point3::new(-4.0, 0.0, 0.0),
             look: Vec3::new(1.0, 0.0, 0.0),
             hfov: 100.0,
             vfov: 56.25,
             renderer: Renderer::Wireframe(color),
         }
     }
-    pub fn tick(&self, time: u32) {}
 }
 
 impl World {
@@ -113,12 +142,6 @@ impl World {
         }
     }
 
-    pub fn tick(&mut self, time: u32) {
-        for part in &mut self.parts {
-            part.tick(time);
-            self.camera.tick(time);
-        }
-    }
     pub fn new_empty() -> World {
         World {
             parts: Vec::new(),
@@ -126,7 +149,10 @@ impl World {
             background: BLACK,
         }
     }
-    pub fn add_part(&mut self, p: Part) {
+    pub fn add_part(&mut self, p: Assembly) {
         self.parts.push(p);
+    }
+    pub fn transform_mesh_index(&mut self, i: usize, mat: Mat4) {
+        self.parts[i].transform(&mat);
     }
 }

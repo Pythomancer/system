@@ -42,8 +42,26 @@ impl AddAssign for Point3 {
 
 impl Add for Point3 {
     type Output = Self;
-    fn add(self, rhs: Self) -> Self{
-        Self {x: self.x + rhs.x, y: self.y + rhs.y, z: self.z + rhs.z}
+    fn add(self, rhs: Self) -> Self {
+        Self {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+            z: self.z + rhs.z,
+        }
+    }
+}
+
+impl Point3 {
+    pub fn sum_points(pts: &[Point3]) -> Point3 {
+        let mut x = 0.0;
+        let mut y = 0.0;
+        let mut z = 0.0;
+        for pt in pts {
+            x += pt.x;
+            y += pt.y;
+            z += pt.z;
+        }
+        Point3 { x, y, z }
     }
 }
 
@@ -67,6 +85,17 @@ impl Div<f32> for Vec3 {
             x: self.x / other,
             y: self.y / other,
             z: self.z / other,
+        }
+    }
+}
+impl Add<&Vec3> for Point3 {
+    type Output = Self;
+
+    fn add(self, other: &Vec3) -> Self::Output {
+        Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
         }
     }
 }
